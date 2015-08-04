@@ -18,5 +18,6 @@ CREATE TABLE cleaning_user (
   email        VARCHAR(255) NOT NULL,
   PRIMARY KEY (user_id)
 );
+ALTER TABLE cleaning_event ADD CONSTRAINT UK_96kbeew8r563c0g3g1ce9qp6i UNIQUE (event_date, cleaning_type_typeId);
 ALTER TABLE cleaning_event ADD CONSTRAINT FK_eo5dyk0qmd8q73mv78e7qe5mj FOREIGN KEY (cleaning_type_typeId) REFERENCES cleaning_type;
 ALTER TABLE cleaning_event ADD CONSTRAINT FK_5p3ugfkk070iwjab1lrl1imu1 FOREIGN KEY (cleaning_user_userId) REFERENCES cleaning_user;
