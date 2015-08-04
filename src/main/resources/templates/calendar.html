@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title></title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <link th:href="@{/webjars/ratchet/2.0.2/css/ratchet.min.css}" rel="stylesheet"/>
+    <link th:href="@{/responsive-calendar.css}" rel="stylesheet" media="screen"/>
+    <script th:src="@{/jquery.js}"></script>
+    <script th:src="@{/responsive-calendar.min.js}"></script>
+    <style>
+    </style>
+</head>
+<body>
+<header class="bar bar-nav">
+    <a class="icon icon-left pull-left" th:href="@{/.}" onclick="location.href=this.href"></a>
+
+    <h1 class="title">Cleaning Recorder</h1>
+</header>
+<div class="content">
+    <!-- Responsive calendar - START -->
+    <div class="responsive-calendar">
+        <div class="controls">
+            <a class="pull-left" data-go="prev">
+                <div class="btn btn-primary"><span class="icon icon-left"></span> Prev</div>
+            </a>
+            <h4><span data-head-year=""></span> <span data-head-month=""></span></h4>
+            <a class="pull-right" data-go="next">
+                <div class="btn btn-primary">Next <span class="icon icon-right"></span></div>
+            </a>
+        </div>
+        <hr/>
+        <div class="day-headers">
+            <div class="day header">Mon</div>
+            <div class="day header">Tue</div>
+            <div class="day header">Wed</div>
+            <div class="day header">Thu</div>
+            <div class="day header">Fri</div>
+            <div class="day header">Sat</div>
+            <div class="day header">Sun</div>
+        </div>
+        <div class="days" data-group="days">
+            <!-- the place where days will be generated -->
+        </div>
+    </div>
+    <!-- Responsive calendar - END -->
+</div>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        var events = JSON.parse(/*[[${events}]]*/ '{"2015-08-30": {"number": 5},"2015-08-26": {"number": 1}}');
+        for (var k in events) {
+            events[k].url = location.href + '/' + k;
+            events[k].badgeClass = "badge-positive";
+        }
+        $('.responsive-calendar').responsiveCalendar({
+            events: events
+        });
+    });
+</script>
+</body>
+</html>

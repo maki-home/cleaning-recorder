@@ -35,27 +35,7 @@
     <h1 class="title">Cleaning Recorder</h1>
 </header>
 <div class="content">
-    <h4>Registration</h4>
-
-    <p th:text="${error}"></p>
-
-    <form th:action="@{/done}"
-          th:object="${cleaningEventRegistrationForm}"
-          method="post">
-        <div class="input-row">
-            <label>Type</label>
-            <select th:field="*{typeId}">
-                <option th:each="type : ${types}" th:value="${type.typeId}"
-                        th:text="${type.typeName}"/>
-            </select>
-        </div>
-        <div class="input-row">
-            <label>Date</label>
-            <input type="date" th:field="*{eventDate}"/>
-        </div>
-        <input type="submit" value="Done" class="btn btn-positive btn-block"/>
-    </form>
-    <h4>Recent Events</h4>
+    <h4>Events @ <span th:text="${localDate}"></span></h4>
     <ul class="table-view">
         <li th:each="event : ${events}" class="table-view-cell">
             <span th:text="${event.eventDate}"></span><br/>
