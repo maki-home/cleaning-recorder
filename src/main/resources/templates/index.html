@@ -6,9 +6,7 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-    <link th:href="@{/webjars/ratchet/2.0.2/css/ratchet.min.css}"
-          rel="stylesheet"/>
-    <script th:src="@{/webjars/ratchet/2.0.2/js/ratchet.min.js}"></script>
+    <link th:href="@{/webjars/ratchet/2.0.2/css/ratchet.min.css}" rel="stylesheet"/>
     <style>
         /* https://github.com/twbs/ratchet/issues/186 */
         .input-row label + select {
@@ -30,9 +28,9 @@
 </head>
 <body>
 <header class="bar bar-nav">
-    <a class="icon icon-list pull-right" th:href="@{/calendar}" onclick="location.href=this.href"></a>
+    <a class="icon icon-list pull-right" th:href="@{/calendar}"></a>
 
-    <h1 class="title">Cleaning Recorder</h1>
+    <h1 class="title"><a th:href="@{/.}">Cleaning Recorder</a></h1>
 </header>
 <div class="content">
     <h4>Registration</h4>
