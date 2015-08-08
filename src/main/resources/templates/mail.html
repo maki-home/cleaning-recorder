@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/ratchet/2.0.2/css/ratchet.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="content">
+    <h1>Clean!!</h1>
+    <ul class="table-view">
+        <li th:each="limit : ${limits}" class="table-view-cell">
+            <span th:text="${limit.typeName}"></span>
+            (Limit Date:
+            <span th:text="${limit.limit}"></span>)
+        </li>
+    </ul>
+</div>
+</body>
+</html>

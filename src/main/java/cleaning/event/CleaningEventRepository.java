@@ -6,10 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface CleaningEventRepository extends JpaRepository<CleaningEvent, String> {
     @Query("SELECT NEW cleaning.event.CleaningEventSummary(COUNT(x), x.eventDate) FROM CleaningEvent x GROUP BY x.eventDate")
     List<CleaningEventSummary> findSummary();
 
     List<CleaningEvent> findByEventDate(Date eventDate);
+
+    Optional<CleaningEvent> findFirstByCleaningType_TypeIdOrderByEventDateDesc(Integer typeId);
 }

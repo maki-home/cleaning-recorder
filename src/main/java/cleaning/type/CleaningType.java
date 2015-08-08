@@ -9,6 +9,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -24,4 +25,8 @@ public class CleaningType implements Serializable {
     @Min(0)
     @NotNull
     private Integer cycleDay;
+
+    public LocalDate limitDate(LocalDate lastDate) {
+        return lastDate.plusDays(cycleDay);
+    }
 }
