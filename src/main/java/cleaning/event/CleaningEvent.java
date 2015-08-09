@@ -1,36 +1,38 @@
 package cleaning.event;
 
+import cleaning.type.CleaningType;
+import cleaning.user.CleaningUser;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.*;
-
-import lombok.Data;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import cleaning.type.CleaningType;
-import cleaning.user.CleaningUser;
-
 @Entity
 @Data
-@Table(indexes = { @Index(unique = true, columnList = "eventDate, cleaning_type_typeId") })
+@IdClass(CleaningEvent.EventId.class)
 public class CleaningEvent implements Serializable {
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @GeneratedValue(generator = "uuid")
-    @Column(columnDefinition = "varchar(36)")
     @Id
-    private String eventId;
-
     @Temporal(TemporalType.DATE)
     private Date eventDate;
+
+    @Id
+    @ManyToOne
+    private CleaningType cleaningType;
 
     @Enumerated(EnumType.STRING)
     private CleaningEventStatus eventStatus;
 
     @ManyToOne
-    private CleaningType cleaningType;
-
-    @ManyToOne
     private CleaningUser cleaningUser;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class EventId implements Serializable {
+        private Date eventDate;
+        private Integer cleaningType;
+    }
 }

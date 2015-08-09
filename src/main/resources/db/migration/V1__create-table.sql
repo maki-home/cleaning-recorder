@@ -1,10 +1,9 @@
 CREATE TABLE cleaning_event (
-  event_id             VARCHAR(36) NOT NULL,
-  event_date           DATE,
+  event_date           DATE NOT NULL,
   event_status         VARCHAR(255),
   cleaning_type_typeId INTEGER,
   cleaning_user_userId VARCHAR(255),
-  PRIMARY KEY (event_id)
+  PRIMARY KEY (cleaning_type_typeId, event_date)
 );
 CREATE TABLE cleaning_type (
   type_id   INTEGER     NOT NULL CHECK (type_id <= 99 AND type_id >= 0),
@@ -18,6 +17,5 @@ CREATE TABLE cleaning_user (
   email        VARCHAR(255) NOT NULL,
   PRIMARY KEY (user_id)
 );
-ALTER TABLE cleaning_event ADD CONSTRAINT UK_96kbeew8r563c0g3g1ce9qp6i UNIQUE (event_date, cleaning_type_typeId);
 ALTER TABLE cleaning_event ADD CONSTRAINT FK_eo5dyk0qmd8q73mv78e7qe5mj FOREIGN KEY (cleaning_type_typeId) REFERENCES cleaning_type;
 ALTER TABLE cleaning_event ADD CONSTRAINT FK_5p3ugfkk070iwjab1lrl1imu1 FOREIGN KEY (cleaning_user_userId) REFERENCES cleaning_user;

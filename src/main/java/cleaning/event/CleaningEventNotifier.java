@@ -2,10 +2,10 @@ package cleaning.event;
 
 import cleaning.system.InstalledDate;
 import cleaning.type.CleaningType;
-import cleaning.type.CleaningTypeRepository;
+import cleaning.type.CleaningTypeService;
 import cleaning.user.CleaningUser;
 import cleaning.user.CleaningUserContainer;
-import cleaning.user.CleaningUserRepository;
+import cleaning.user.CleaningUserService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +36,11 @@ public class CleaningEventNotifier {
     @Autowired
     CleaningUserContainer cleaningUserContainer;
     @Autowired
-    CleaningTypeRepository cleaningTypeRepository;
+    CleaningTypeService cleaningTypeService;
     @Autowired
-    CleaningEventRepository cleaningEventRepository;
+    CleaningEventService cleaningEventService;
     @Autowired
-    CleaningUserRepository cleaningUserRepository;
+    CleaningUserService cleaningUserService;
 
     BlockingQueue<MimeMessagePreparator> messages = new LinkedBlockingQueue<>(100);
 
@@ -49,7 +48,7 @@ public class CleaningEventNotifier {
         Context context = new Context();
         context.setVariable("user", cleaningUserContainer.getUser().getDisplayName());
         context.setVariable("limits", limits);
-        List<CleaningUser> users = cleaningUserRepository.findAll();
+        List<CleaningUser> users = cleaningUserService.findAll();
 
         MimeMessagePreparator preparator = (mimeMessage) -> {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
@@ -68,15 +67,16 @@ public class CleaningEventNotifier {
         return "OK";
     }
 
-    @Scheduled(cron = "0 0 8/18/21 * * *", zone = "JST")
+    @Scheduled(cron = "0 0 8 * * *", zone = "JST")
+    @Scheduled(cron = "0 0 18 * * *", zone = "JST")
+    @Scheduled(cron = "0 0 21 * * *", zone = "JST")
     void checkAll() {
-        List<CleaningType> types = cleaningTypeRepository.findAll();
+        List<CleaningType> types = cleaningTypeService.findAll();
         LocalDate now = LocalDate.now();
 
         List<TypeNameAndLimit> limits = new ArrayList<>();
         for (CleaningType type : types) {
-            LocalDate lastDate = cleaningEventRepository.findFirstByCleaningType_TypeIdOrderByEventDateDesc(type.getTypeId())
-                    .map(e -> Date.class.cast(e.getEventDate()).toLocalDate())
+            LocalDate lastDate = cleaningEventService.findLastEventDate(type.getTypeId())
                     .orElse(installedDate.asLocalDate());
             LocalDate limit = type.limitDate(lastDate);
             if (limit.isBefore(now)) {

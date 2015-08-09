@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Map;
@@ -17,13 +16,13 @@ import java.util.stream.Collectors;
 @Controller
 public class CleaningEventCalendarController {
     @Autowired
-    CleaningEventRepository cleaningEventRepository;
+    CleaningEventService cleaningEventService;
     @Autowired
     ObjectMapper objectMapper;
 
     @RequestMapping("/calendar")
     String calendar(Model model) throws JsonProcessingException {
-        Map<String, Map<String, Long>> map = cleaningEventRepository.findSummary()
+        Map<String, Map<String, Long>> map = cleaningEventService.findSummary()
                 .stream()
                 .collect(Collectors.toMap(
                         x -> x.getEventDate().toString(),
@@ -35,7 +34,7 @@ public class CleaningEventCalendarController {
     @RequestMapping("/calendar/{localDate}")
     String date(@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate localDate, Model model) {
         model.addAttribute("localDate", localDate);
-        model.addAttribute("events", cleaningEventRepository.findByEventDate(Date.valueOf(localDate)));
+        model.addAttribute("events", cleaningEventService.findByEventDate(localDate));
         return "date";
     }
 }

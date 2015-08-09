@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public interface CleaningEventRepository extends JpaRepository<CleaningEvent, String> {
+public interface CleaningEventRepository extends JpaRepository<CleaningEvent, CleaningEvent.EventId> {
     @Query("SELECT NEW cleaning.event.CleaningEventSummary(COUNT(x), x.eventDate) FROM CleaningEvent x GROUP BY x.eventDate")
     List<CleaningEventSummary> findSummary();
 

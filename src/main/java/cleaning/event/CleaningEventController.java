@@ -1,20 +1,17 @@
 package cleaning.event;
 
-import java.time.LocalDate;
-import java.util.List;
-
+import cleaning.type.CleaningType;
+import cleaning.type.CleaningTypeService;
+import cleaning.user.CleaningUserContainer;
 import lombok.Data;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import cleaning.type.CleaningType;
-import cleaning.type.CleaningTypeService;
-import cleaning.user.CleaningUserContainer;
+import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 public class CleaningEventController {
@@ -50,16 +47,6 @@ public class CleaningEventController {
         cleaningEventService.done(form.getTypeId(), cleaningUserContainer
                 .getUser(), form.getEventDate());
         return "redirect:/";
-    }
-
-    @ExceptionHandler(CleaningEventService.CleaningEventAlreadyRegisteredException.class)
-    ModelAndView registeredError(
-            CleaningEventService.CleaningEventAlreadyRegisteredException e) {
-        return new ModelAndView("index")
-                .addObject(form())
-                .addObject("types", types())
-                .addObject("error", e.getMessage())
-                .addObject("events", cleaningEventService.findAll());
     }
 
     @ResponseBody
