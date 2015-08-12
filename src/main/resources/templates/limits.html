@@ -28,39 +28,17 @@
 </head>
 <body>
 <header class="bar bar-nav">
-    <a class="icon icon-list pull-right" th:href="@{/calendar}"></a>
+    <a class="icon icon-left pull-left" th:href="@{/.}"></a>
 
     <h1 class="title"><a th:href="@{/.}">Cleaning Recorder</a></h1>
 </header>
 <div class="content">
-    <h4>Registration</h4>
-
-    <p th:text="${error}"></p>
-
-    <form th:action="@{/done}"
-          th:object="${cleaningEventRegistrationForm}"
-          method="post">
-        <div class="input-row">
-            <label>Type</label>
-            <select th:field="*{typeId}">
-                <option th:each="type : ${types}" th:value="${type.typeId}"
-                        th:text="${type.typeName}"/>
-            </select>
-        </div>
-        <div class="input-row">
-            <label>Date</label>
-            <input type="date" th:field="*{eventDate}"/>
-        </div>
-        <input type="submit" value="Done" class="btn btn-positive btn-block"/>
-    </form>
-    <p><a th:href="@{/limits}">Limit Dates to Clean</a></p>
-    <h4>Recent Events</h4>
+    <h1>Limit Date to Clean</h1>
     <ul class="table-view">
-        <li th:each="event : ${events}" class="table-view-cell">
-            <span th:text="${event.eventDate}"></span><br/>
-            <span th:class="${event.eventStatus.styleClass}"></span>
-            <span th:text="${event.cleaningType.typeName}"></span>
-            <span th:text="${event.cleaningUser.displayName}"></span>
+        <li th:each="limit : ${limits}" class="table-view-cell">
+            <span th:text="${limit.typeName}"></span>
+            (Limit Date:
+            <span th:text="${limit.limit}"></span>)
         </li>
     </ul>
 </div>

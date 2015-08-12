@@ -1,12 +1,10 @@
 package cleaning.event;
 
-import cleaning.system.InstalledDate;
 import cleaning.type.CleaningType;
 import cleaning.type.CleaningTypeService;
 import cleaning.user.CleaningUser;
 import cleaning.user.CleaningUserContainer;
 import cleaning.user.CleaningUserService;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,10 +17,10 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -31,8 +29,6 @@ public class CleaningEventNotifier {
     JavaMailSender mailSender;
     @Autowired
     SpringTemplateEngine templateEngine;
-    @Autowired
-    InstalledDate installedDate;
     @Autowired
     CleaningUserContainer cleaningUserContainer;
     @Autowired
@@ -44,7 +40,7 @@ public class CleaningEventNotifier {
 
     BlockingQueue<MimeMessagePreparator> messages = new LinkedBlockingQueue<>(100);
 
-    void reserveToSend(List<TypeNameAndLimit> limits) {
+    void reserveToSend(List<CleaningEventService.TypeNameAndLimit> limits) {
         Context context = new Context();
         context.setVariable("user", cleaningUserContainer.getUser().getDisplayName());
         context.setVariable("limits", limits);
@@ -75,15 +71,10 @@ public class CleaningEventNotifier {
         List<CleaningType> types = cleaningTypeService.findAll();
         LocalDate now = LocalDate.now();
 
-        List<TypeNameAndLimit> limits = new ArrayList<>();
-        for (CleaningType type : types) {
-            LocalDate lastDate = cleaningEventService.findLastEventDate(type.getTypeId())
-                    .orElse(installedDate.asLocalDate());
-            LocalDate limit = type.limitDate(lastDate);
-            if (limit.isBefore(now)) {
-                limits.add(new TypeNameAndLimit(type.getTypeName(), limit));
-            }
-        }
+        List<CleaningEventService.TypeNameAndLimit> limits = cleaningEventService
+                .findTypeNameAndLimitOverLimit(types).stream()
+                .filter(x -> x.getLimit().isBefore(now))
+                .collect(Collectors.toList());
         if (!limits.isEmpty()) {
             reserveToSend(limits);
         }
@@ -99,9 +90,4 @@ public class CleaningEventNotifier {
         }
     }
 
-    @Data
-    public static class TypeNameAndLimit {
-        private final String typeName;
-        private final LocalDate limit;
-    }
 }

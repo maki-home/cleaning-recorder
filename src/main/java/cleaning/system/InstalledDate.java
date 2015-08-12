@@ -1,6 +1,7 @@
 package cleaning.system;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,8 @@ public class InstalledDate implements Serializable {
     private Date installedOn;
     @Autowired
     JdbcTemplate jdbcTemplate;
+    @Value("${sql.installed-on}")
+    String sqlInstalledOn;
 
     public InstalledDate(Date installedOn) {
         this.installedOn = installedOn;
@@ -41,6 +44,6 @@ public class InstalledDate implements Serializable {
 
     @PostConstruct
     void init() {
-        this.installedOn = jdbcTemplate.queryForObject("SELECT \"installed_on\" FROM \"public\".\"schema_version\" ORDER BY \"installed_on\" ASC LIMIT 1", Date.class);
+        this.installedOn = jdbcTemplate.queryForObject(sqlInstalledOn, Date.class);
     }
 }

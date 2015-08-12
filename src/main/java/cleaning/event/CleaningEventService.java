@@ -1,8 +1,11 @@
 package cleaning.event;
 
+import cleaning.system.InstalledDate;
+import cleaning.type.CleaningType;
 import cleaning.type.CleaningTypeRepository;
 import cleaning.user.CleaningUser;
 import cleaning.user.CleaningUserRepository;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -10,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +28,9 @@ public class CleaningEventService {
 
     @Autowired
     CleaningTypeRepository cleaningTypeRepository;
+
+    @Autowired
+    InstalledDate installedDate;
 
     public List<CleaningEvent> findAll() {
         Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "eventDate"))
@@ -45,6 +52,17 @@ public class CleaningEventService {
                 .map(e -> Date.class.cast(e.getEventDate()).toLocalDate());
     }
 
+    public List<TypeNameAndLimit> findTypeNameAndLimitOverLimit(List<CleaningType> types) {
+        List<TypeNameAndLimit> limits = new ArrayList<>();
+        for (CleaningType type : types) {
+            LocalDate lastDate = findLastEventDate(type.getTypeId())
+                    .orElse(installedDate.asLocalDate());
+            LocalDate limit = type.limitDate(lastDate);
+            limits.add(new TypeNameAndLimit(type.getTypeName(), limit));
+        }
+        return limits;
+    }
+
     public CleaningEvent done(Integer typeId, CleaningUser cleaningUser,
                               LocalDate date) {
         return register(typeId, cleaningUser, CleaningEventStatus.DONE, date);
@@ -64,5 +82,11 @@ public class CleaningEventService {
         event.setCleaningUser(cleaningUser);
         System.out.println(event);
         return cleaningEventRepository.saveAndFlush(event);
+    }
+
+    @Data
+    public static class TypeNameAndLimit {
+        private final String typeName;
+        private final LocalDate limit;
     }
 }
