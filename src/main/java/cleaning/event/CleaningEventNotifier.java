@@ -65,7 +65,7 @@ public class CleaningEventNotifier {
 
     @Scheduled(cron = "0 0 8 * * *", zone = "JST")
     @Scheduled(cron = "0 0 18 * * *", zone = "JST")
-    @Scheduled(cron = "0 0 21 * * *", zone = "JST")
+    @Scheduled(cron = "0 0 22 * * *", zone = "JST")
     void checkAll() {
         log.info("Check...");
         List<CleaningType> types = cleaningTypeService.findAll();
