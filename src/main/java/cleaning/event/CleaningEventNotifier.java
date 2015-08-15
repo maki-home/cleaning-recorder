@@ -3,7 +3,6 @@ package cleaning.event;
 import cleaning.type.CleaningType;
 import cleaning.type.CleaningTypeService;
 import cleaning.user.CleaningUser;
-import cleaning.user.CleaningUserContainer;
 import cleaning.user.CleaningUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +29,6 @@ public class CleaningEventNotifier {
     @Autowired
     SpringTemplateEngine templateEngine;
     @Autowired
-    CleaningUserContainer cleaningUserContainer;
-    @Autowired
     CleaningTypeService cleaningTypeService;
     @Autowired
     CleaningEventService cleaningEventService;
@@ -42,7 +39,6 @@ public class CleaningEventNotifier {
 
     void reserveToSend(List<CleaningEventService.TypeNameAndLimit> limits) {
         Context context = new Context();
-        context.setVariable("user", cleaningUserContainer.getUser().getDisplayName());
         context.setVariable("limits", limits);
         List<CleaningUser> users = cleaningUserService.findAll();
 
