@@ -1,8 +1,13 @@
 ---
 applications:
   - name: cleaning-recorder
-    memory: 512M
-    buildpack: java_buildpack
+    memory: 768M
+    buildpack: java_buildpack_offline
     path: target/cleaning-recorder-0.0.1-SNAPSHOT.jar
+    domains:
+      - ik.am
+      - cfapps.pez.pivotal.io
     services:
-      - postgres
+      - cleaning-recorder-db
+    env:
+      JAVA_OPTS: -Duser.timezone=Asia/Tokyo -Duser.language=ja -Duser.country=JP
