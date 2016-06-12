@@ -9,5 +9,6 @@ applications:
       - cfapps.pez.pivotal.io
     services:
       - cleaning-recorder-db
+      - cleaning-recorder-smtp
     env:
       JAVA_OPTS: -Duser.timezone=Asia/Tokyo -Duser.language=ja -Duser.country=JP

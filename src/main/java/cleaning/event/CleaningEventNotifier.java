@@ -41,6 +41,9 @@ public class CleaningEventNotifier {
         Context context = new Context();
         context.setVariable("limits", limits);
         List<CleaningUser> users = cleaningUserService.findAll();
+        if (users.isEmpty()) {
+            return;
+        }
 
         MimeMessagePreparator preparator = (mimeMessage) -> {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
